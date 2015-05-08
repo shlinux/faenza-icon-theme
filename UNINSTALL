@@ -1,0 +1,90 @@
+#!/bin/bash
+# Uninstall script for Faenza icon themes
+# Written by Tiheum (matthieu.james@gmail.com)
+
+ROOT_UID=0
+if [ "$UID" -ne "$ROOT_UID" ]
+then
+	echo "Faenza icon themes installed in $HOME/.icons will be removed."
+else
+	echo "Faenza icon themes installed in /usr/share/icons will be removed. According to your choices during installation, some default icons will be restored."
+fi
+read -p "Do you want to continue ? [Y]es, [N]o : " response
+case $response in
+	[Yy]* ) ;;
+    [Nn]* ) exit 99;;
+    * ) echo "Wrong value: uninstall aborted."; exit 1;;
+esac
+
+if [ "$UID" -eq "$ROOT_UID" ]
+then
+	rm -Rf /usr/share/icons/Faenza 2>/dev/null
+	rm -Rf /usr/share/icons/Faenza-Dark 2>/dev/null
+	rm -Rf /usr/share/icons/Faenza-Darkest 2>/dev/null
+	rm -Rf /usr/share/icons/Faenza-Darker 2>/dev/null
+	rm -Rf /usr/share/icons/Faenza-Radiance 2>/dev/null
+	rm -Rf /usr/share/icons/Faenza-Ambiance 2>/dev/null
+	rm -Rf /usr/share/emesene/themes/Faenza
+	rm -Rf /usr/share/emesene/themes/Faenza-Dark
+	rm -Rf /usr/share/emesene/themes/Faenza-Darkest
+	dir="/usr/lib/rhythmbox/plugins/audioscrobbler"
+	if [ -e $dir/as-icon.default.png ]
+	then
+		mv -f $dir/as-icon.default.png $dir/as-icon.png 2>/dev/null
+	fi
+	dir="/usr/lib/rhythmbox/plugins/umusicstore"
+	if [ -e $dir/musicstore_icon.default.png ]
+	then
+		mv -f $dir/musicstore_icon.default.png $dir/musicstore_icon.png 2>/dev/null
+	fi
+	dir="/usr/share/dockmanager/data"
+	for file in skype_away skype_dnd skype_invisible skype_na skype_offline skype_online skype_skypeme
+	do
+		if [ -e $dir/$file.default.svg ]
+		then
+			mv -f $dir/$file.default.svg $dir/$file.svg 2>/dev/null
+		fi
+	done
+	dir="/usr/share/deadbeef/pixmaps"
+	for file in play_24
+	do
+		if [ -e $dir/$file.default.png ]
+		then
+			mv -f $dir/$file.default.png $dir/$file.png 2>/dev/null
+		fi
+	done
+	dir="/usr/share/lastfm/icons"
+	for file in user_black22 user_blue22 user_green22 user_orange22 user_red22
+	do
+		if [ -e $dir/$file.default.png ]
+		then
+			mv -f $dir/$file.default.png $dir/$file.png 2>/dev/null
+		fi
+	done
+	dir="/usr/share/liferea/pixmaps"
+	for file in available available_offline empty empty_offline
+	do
+		if [ -e $dir/$file.default.png ]
+		then
+			mv -f $dir/$file.default.png $dir/$file.png 2>/dev/null
+		fi
+	done
+	dir="/usr/share/radiotray/images"
+	for file in radiotray_connecting radiotray_off radiotray_on
+	do
+		if [ -e $dir/$file.default.png ]
+		then
+			mv -f $dir/$file.default.png $dir/$file.png 2>/dev/null
+		fi
+	done
+else
+	rm -Rf $HOME/.icons/Faenza 2>/dev/null
+	rm -Rf $HOME/.icons/Faenza-Dark 2>/dev/null
+	rm -Rf $HOME/.icons/Faenza-Darkest 2>/dev/null
+	rm -Rf $HOME/.icons/Faenza-Darker 2>/dev/null
+	rm -Rf $HOME/.icons/Faenza-Ambiance 2>/dev/null
+	rm -Rf $HOME/.icons/Faenza-Radiance 2>/dev/null
+fi
+
+echo "Uninstall complete."
+exit 0

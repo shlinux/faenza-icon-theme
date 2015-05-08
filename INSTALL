@@ -1,0 +1,274 @@
+#!/bin/bash
+# Installation script for Faenza icon themes
+# Written by Tiheum (matthieu.james@gmail.com)
+
+ROOT_UID=0
+if [ "$UID" -ne "$ROOT_UID" ]
+then
+	echo "Icon themes will be installed in $HOME/.icons. To make them available for all users, run this script as root."
+else
+	echo "Icon themes will be installed in /usr/share/icons and are available for all users."
+fi
+read -p "Do you want to continue ? [Y]es, [N]o : " response
+case $response in
+	[Yy]* ) ;;
+    [Nn]* ) exit 99;;
+    * ) echo "Wrong value: installaton aborted."; exit 1;;
+esac
+
+DIR="$( cd -P "$( dirname "$0" )" && pwd )"
+cd $DIR
+
+echo
+read -p "What distributor logo would you use ? [A]rchlinux, [D]ebian, [f]edora, [F]rugalware, [G]entoo, [L]inux Mint, [O]pensuse, [M]andriva, [S]lackware, [U]buntu : " distro
+distro="${input:-$distro}"
+case $distro in
+	[Aa]* ) distributor="archlinux";;
+	[Dd]* ) 
+		distributor="debian"
+		cd ./Faenza/apps/scalable/ && ln -sf ./softwarecenter-$distributor.svg softwarecenter.svg && cd ../../..
+		for size in 48 32 24 22 16; do
+			cd ./Faenza/apps/48/ && ln -sf ./softwarecenter-$distributor.png softwarecenter.png && cd ../../..
+		done
+		;;
+    [f]* ) distributor="fedora";;
+    [F]* ) distributor="frugalware";;
+    [Gg]* ) distributor="gentoo";;
+    [Ll]* ) distributor="linux-mint";;
+    [Oo]* ) distributor="opensuse";;
+    [Mm]* ) distributor="mandriva";;
+    [Ss]* ) distributor="slackware";;
+    [Uu]* ) distributor="ubuntu";;
+    * ) echo "Wrong value: installaton aborted."; exit 1;;
+esac
+iconname="distributor-logo-$distributor"
+cd ./Faenza/places/scalable/ && ln -sf ./$iconname.svg distributor-logo.svg && cd ../../..
+for size in 48 32 24 22; do
+	cd ./Faenza/places/$size/ && ln -sf ./$iconname.png distributor-logo.png && cd ../../..
+done
+
+echo
+read -p "What icon would you use for Gnome main menu ? [G]nome Foot, [D]istributor logo, [M]onochrome ditributor logo : " logo
+logo="${input:-$logo}"
+case $logo in
+	[Gg]* ) iconname="start-here-gnome";;
+    [Mm]* ) iconname="start-here-$distributor";;
+    [Dd]* ) ;;
+    * ) echo "Wrong value: installaton aborted."; exit 1;;
+esac
+for theme in Faenza Faenza-Dark; do
+	cd ./$theme/places/scalable/ && ln -sf ./$iconname.svg start-here.svg && ln -sf ./$iconname-symbolic.svg start-here-symbolic.svg && cd ../../..
+	for size in 48 32 24 22; do
+		cd ./$theme/places/$size/ && ln -sf ./$iconname.png start-here.png && cd ../../..
+	done
+done
+
+if [ -d $HOME/.icons/Faenza ]
+then
+	echo
+	read -p "An existing installation have been detected in $HOME/.icons. Remove it previously ? [Y]es, [N]o :" response
+	case $response in
+		[Yy]* ) rm -Rf $HOME/.icons/Faenza 2>/dev/null; rm -Rf $HOME/.icons/Faenza-Dark 2>/dev/null; rm -Rf $HOME/.icons/Faenza-Darkest 2>/dev/null; rm -Rf $HOME/.icons/Faenza-Darker 2>/dev/null; rm -Rf $HOME/.icons/Faenza-Ambiance 2>/dev/null; rm -Rf $HOME/.icons/Faenza-Radiance 2>/dev/null;;
+	    * ) ;;
+	esac
+fi
+
+if [ "$UID" -eq "$ROOT_UID" ]
+then
+	if [ -d /usr/share/icons/Faenza ]
+	then
+		echo
+		read -p "An existing installation has been detected in /usr/share/icons. Remove it previously ? [Y]es, [N]o :" response
+		case $response in
+			[Yy]* ) rm -Rf /usr/share/icons/Faenza 2>/dev/null; rm -Rf /usr/share/icons/Faenza-Dark 2>/dev/null; rm -Rf /usr/share/icons/Faenza-Darker 2>/dev/null; rm -Rf /usr/share/icons/Faenza-Darkest 2>/dev/null; rm -Rf /usr/share/icons/Faenza-Ambiance 2>/dev/null; rm -Rf /usr/share/icons/Faenza-Radiance 2>/dev/null;;
+		    * ) ;;
+		esac
+		echo
+	fi
+	cp -R ./Faenza/ /usr/share/icons/
+	cp -R ./Faenza-Dark/ /usr/share/icons/
+	cp -R ./Faenza-Darkest/ /usr/share/icons/
+	cp -R ./Faenza-Darker/ /usr/share/icons/
+	cp -R ./Faenza-Ambiance/ /usr/share/icons/
+	cp -R ./Faenza-Radiance/ /usr/share/icons/
+	cp -R ./emesene /usr/share
+	install_dir=/usr/share/icons/
+else
+	cp -R ./Faenza/ $HOME/.icons/
+	cp -R ./Faenza-Dark/ $HOME/.icons/
+	cp -R ./Faenza-Darkest/ $HOME/.icons/
+	cp -R ./Faenza-Darker/ $HOME/.icons/
+	cp -R ./Faenza-Ambiance/ $HOME/.icons/
+	cp -R ./Faenza-Radiance/ $HOME/.icons/
+	install_dir=$HOME/.icons/
+fi
+
+echo
+read -p "Do you want to replace some 22x22 applications icons by their monochrome conterpart to be displayed in system tray ? [Y]es, [N]o :" response
+current_dir=$(pwd)
+case $response in
+	[Yy]* )
+		for theme in Faenza Faenza-Dark
+		do
+			cd $install_dir/$theme/apps/22
+			if [ "$theme" = "Faenza" ]; then
+				echo "...CoverGloobus..."
+			fi
+			ln -sf $install_dir/$theme/status/22/covergloobus-panel.png ./covergloobus.png
+			if [ "$theme" = "Faenza" ];	then
+				echo "...Deluge..."
+			fi
+			ln -sf $install_dir/$theme/status/22/deluge-panel.png ./deluge.png
+			if [ "$theme" = "Faenza" ];	then
+				echo "...Exaile..."
+			fi
+			ln -sf $install_dir/$theme/status/22/exaile-panel.png ./exaile.png
+			if [ "$theme" = "Faenza" ];	then
+				echo "...Fusion Icon..."
+			fi	
+			ln -sf $install_dir/$theme/status/22/fusion-icon-symbolic.png ./fusion-icon.png
+			if [ "$theme" = "Faenza" ];	then
+				echo "...Gnome-do..."
+			fi
+			ln -sf $install_dir/$theme/status/22/gnome-do-panel.png ./gnome-do.png
+			if [ "$theme" = "Faenza" ];	then
+				echo "...iBus..."
+			fi
+			ln -sf $install_dir/$theme/status/22/ibus-panel.png ./ibus.png
+			if [ "$theme" = "Faenza" ];	then
+				echo "...Kupfer..."
+			fi
+			ln -sf $install_dir/$theme/status/22/kupfer-panel.png ./kupfer.png
+			if [ "$theme" = "Faenza" ];	then
+				echo "...Me TV..."
+			fi
+			ln -sf $install_dir/$theme/status/22/me-tv-panel.png ./me-tv.png
+			if [ "$theme" = "Faenza" ];	then
+				echo "...Zim..."
+			fi
+			ln -sf $install_dir/$theme/status/22/zim-panel.png ./zim.png
+		done
+		;;
+    * ) ;;
+esac
+cd $current_dir
+
+if [ "$UID" -eq "$ROOT_UID" ]
+then
+	echo
+	echo "The following operation change some system settings: use it at your own risk !"
+	read -p "Do you want to replace some default applications icons by Faenza ones ? [D]ark theme ones, [L]ight theme ones, [N]one :" response
+	case $response in
+		[DdLl]* )
+			echo "...Rhythmbox..."
+			dir="/usr/lib/rhythmbox/plugins/audioscrobbler"
+			if [ -e $dir/as-icon.png ]
+			then
+				mv -n $dir/as-icon.png $dir/as-icon.default.png 2>/dev/null
+				ln -sf /usr/share/icons/Faenza/apps/22/lastfm-audioscrobbler.png $dir/as-icon.png 2>/dev/null
+			fi
+			dir="/usr/lib/rhythmbox/plugins/umusicstore"
+			if [ -e $dir/musicstore_icon.png ]
+			then
+				mv -n $dir/musicstore_icon.png $dir/musicstore_icon.default.png 2>/dev/null
+				ln -sf /usr/share/icons/Faenza/apps/22/umusicstore.png $dir/musicstore_icon.png 2>/dev/null
+			fi
+			echo "...Skype for Dockmanager..."
+			dir="/usr/share/dockmanager/data"
+			for file in skype_away skype_dnd skype_invisible skype_na skype_offline skype_online skype_skypeme
+			do 
+				if [ -e $dir/$file.svg ]
+				then
+					mv -n $dir/$file.svg $dir/$file.default.svg 2>/dev/null
+					ln -sf /usr/share/icons/Faenza/status/scalable/$file.svg $dir/$file.svg 2>/dev/null
+				fi
+			done
+			case $response in
+				[Ll]* )
+					theme=Faenza
+					;;
+				[Dd]* )
+					theme=Faenza-Dark
+					;;
+				* ) ;;
+			esac
+			#echo "...DeadBeef..."
+			#dir="/usr/share/deadbeef/pixmaps"
+			#for file in play_24
+			#do
+			#	if [ -e $dir/$file.png ]
+			#	then
+			#		mv $dir/$file.png $dir/$file.default.png 2>/dev/null
+			#		ln -sf /usr/share/icons/$theme/extras/deadbeef/pixmaps/$file.png $dir/$file.png 2>/dev/null
+			#	fi
+			#done
+			echo "...Guake..."
+			dir="/usr/share/pixmaps/guake"
+			for file in guake-notification
+			do 
+				if [ -e $dir/$file.png ]
+				then
+					mv -n $dir/$file.png $dir/$file.default.png 2>/dev/null
+					ln -sf /usr/share/icons/Faenza/apps/48/$file.png $dir/$file.png 2>/dev/null
+				fi
+			done
+			for file in guake-tray
+			do
+				if [ -e $dir/$file.png ]
+				then
+					mv -n $dir/$file.png $dir/$file.default.png 2>/dev/null
+					ln -sf /usr/share/icons/$theme/extras/pixmaps/guake/$file.png $dir/$file.png 2>/dev/null
+				fi
+			done
+			echo "...KeepassX..."
+			dir="/usr/share/keepassx/icons"
+			for file in keepassx
+			do
+				if [ -e $dir/$file.png ]
+				then
+					mv -n $dir/$file.png $dir/$file.default.png 2>/dev/null
+					ln -sf /usr/share/icons/$theme/extras/keepassx/icons/$file.png $dir/$file.png 2>/dev/null
+				fi
+			done
+			echo "...LastFm..."
+			dir="/usr/share/lastfm/icons"
+			for file in user_black22 user_blue22 user_green22 user_orange22 user_red22
+			do
+				if [ -e $dir/$file.png ]
+				then
+					mv -n $dir/$file.png $dir/$file.default.png 2>/dev/null
+					ln -sf /usr/share/icons/$theme/extras/lastfm/icons/$file.png $dir/$file.png 2>/dev/null
+				fi
+			done
+			echo "...Liferea..."
+			dir="/usr/share/liferea/pixmaps"
+			for file in available available_offline empty empty_offline
+			do
+				if [ -e $dir/$file.png ]
+				then
+					mv -n $dir/$file.png $dir/$file.default.png 2>/dev/null
+					ln -sf /usr/share/icons/$theme/extras/liferea/pixmaps/$file.png $dir/$file.png 2>/dev/null
+				fi
+			done
+			echo "...RadioTray..."
+			dir="/usr/share/radiotray/images"
+			for file in radiotray_connecting radiotray_off radiotray_on
+			do
+				if [ -e $dir/$file.png ]
+				then
+					mv -n $dir/$file.png $dir/$file.default.png 2>/dev/null
+					ln -sf /usr/share/icons/$theme/extras/radiotray/images/$file.png $dir/$file.png 2>/dev/null
+				fi
+			done
+			echo "Default icons can be restored by running UNINSTALL script or reinstall the applications with your package manager."
+		;;
+		*) 
+			rm -Rf $install_dir/Faenza/extras
+			rm -Rf $install_dir/Faenza-Dark/extras
+		;;
+	esac
+fi
+
+echo
+echo "Installation complete. Enjoy !"
+exit 0
