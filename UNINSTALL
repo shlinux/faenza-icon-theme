@@ -12,8 +12,8 @@ fi
 read -p "Do you want to continue ? [Y]es, [N]o : " response
 case $response in
 	[Yy]* ) ;;
-    [Nn]* ) exit 99;;
-    * ) echo "Wrong value: uninstall aborted."; exit 1;;
+	[Nn]* ) exit 99;;
+	* ) echo "Wrong value: uninstall aborted."; exit 1;;
 esac
 
 if [ "$UID" -eq "$ROOT_UID" ]

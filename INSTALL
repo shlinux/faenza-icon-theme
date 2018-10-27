@@ -12,8 +12,8 @@ fi
 read -p "Do you want to continue ? [Y]es, [N]o : " response
 case $response in
 	[Yy]* ) ;;
-    [Nn]* ) exit 99;;
-    * ) echo "Wrong value: installaton aborted."; exit 1;;
+	[Nn]* ) exit 99;;
+	* ) echo "Wrong value: installaton aborted."; exit 1;;
 esac
 
 DIR="$( cd -P "$( dirname "$0" )" && pwd )"
@@ -31,15 +31,15 @@ case $distro in
 			cd ./Faenza/apps/48/ && ln -sf ./softwarecenter-$distributor.png softwarecenter.png && cd ../../..
 		done
 		;;
-    [f]* ) distributor="fedora";;
-    [F]* ) distributor="frugalware";;
-    [Gg]* ) distributor="gentoo";;
-    [Ll]* ) distributor="linux-mint";;
-    [Oo]* ) distributor="opensuse";;
-    [Mm]* ) distributor="mandriva";;
-    [Ss]* ) distributor="slackware";;
-    [Uu]* ) distributor="ubuntu";;
-    * ) echo "Wrong value: installaton aborted."; exit 1;;
+	[f]* ) distributor="fedora";;
+	[F]* ) distributor="frugalware";;
+	[Gg]* ) distributor="gentoo";;
+	[Ll]* ) distributor="linux-mint";;
+	[Oo]* ) distributor="opensuse";;
+	[Mm]* ) distributor="mandriva";;
+	[Ss]* ) distributor="slackware";;
+	[Uu]* ) distributor="ubuntu";;
+	* ) echo "Wrong value: installaton aborted."; exit 1;;
 esac
 iconname="distributor-logo-$distributor"
 cd ./Faenza/places/scalable/ && ln -sf ./$iconname.svg distributor-logo.svg && cd ../../..
@@ -52,9 +52,9 @@ read -p "What icon would you use for Gnome main menu ? [G]nome Foot, [D]istribut
 logo="${input:-$logo}"
 case $logo in
 	[Gg]* ) iconname="start-here-gnome";;
-    [Mm]* ) iconname="start-here-$distributor";;
-    [Dd]* ) ;;
-    * ) echo "Wrong value: installaton aborted."; exit 1;;
+	[Mm]* ) iconname="start-here-$distributor";;
+	[Dd]* ) ;;
+	* ) echo "Wrong value: installaton aborted."; exit 1;;
 esac
 for theme in Faenza Faenza-Dark; do
 	cd ./$theme/places/scalable/ && ln -sf ./$iconname.svg start-here.svg && ln -sf ./$iconname-symbolic.svg start-here-symbolic.svg && cd ../../..
@@ -69,7 +69,7 @@ then
 	read -p "An existing installation have been detected in $HOME/.icons. Remove it previously ? [Y]es, [N]o :" response
 	case $response in
 		[Yy]* ) rm -Rf $HOME/.icons/Faenza 2>/dev/null; rm -Rf $HOME/.icons/Faenza-Dark 2>/dev/null; rm -Rf $HOME/.icons/Faenza-Darkest 2>/dev/null; rm -Rf $HOME/.icons/Faenza-Darker 2>/dev/null; rm -Rf $HOME/.icons/Faenza-Ambiance 2>/dev/null; rm -Rf $HOME/.icons/Faenza-Radiance 2>/dev/null;;
-	    * ) ;;
+		* ) ;;
 	esac
 fi
 
@@ -81,7 +81,7 @@ then
 		read -p "An existing installation has been detected in /usr/share/icons. Remove it previously ? [Y]es, [N]o :" response
 		case $response in
 			[Yy]* ) rm -Rf /usr/share/icons/Faenza 2>/dev/null; rm -Rf /usr/share/icons/Faenza-Dark 2>/dev/null; rm -Rf /usr/share/icons/Faenza-Darker 2>/dev/null; rm -Rf /usr/share/icons/Faenza-Darkest 2>/dev/null; rm -Rf /usr/share/icons/Faenza-Ambiance 2>/dev/null; rm -Rf /usr/share/icons/Faenza-Radiance 2>/dev/null;;
-		    * ) ;;
+			* ) ;;
 		esac
 		echo
 	fi
@@ -149,7 +149,7 @@ case $response in
 			ln -sf $install_dir/$theme/status/22/zim-panel.png ./zim.png
 		done
 		;;
-    * ) ;;
+	* ) ;;
 esac
 cd $current_dir
 
